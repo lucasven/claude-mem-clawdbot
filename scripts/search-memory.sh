@@ -19,7 +19,11 @@ WORKER_URL=$("${SCRIPT_DIR}/ensure-worker.sh" 2>/dev/null)
 
 # Search observations
 RESPONSE=$(curl -s --max-time 10 \
-    "${WORKER_URL}/api/observations/search?q=${QUERY_ENCODED}")
+    "${WORKER_URL}/api/search?query=${QUERY_ENCODED}")
 
 # Format output
-echo "$RESPONSE" | jq -r '.[] | "[\(.category)] \(.content) (\(.createdAt | split("T")[0]))"' 2>/dev/null || echo "$RESPONSE"
+if echo "$RESPONSE" | jq -e '.results | length > 0' >/dev/null 2>&1; then
+    echo "$RESPONSE" | jq -r '.results[] | "[\(.type)] \(.title) (score: \(.score | tostring | .[0:4]))"'
+else
+    echo "No results found for: $QUERY"
+fi
