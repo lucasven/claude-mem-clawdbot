@@ -18,5 +18,8 @@ fi
 # Use PLUGIN_ROOT override to point to worker directory
 export CLAUDE_PLUGIN_ROOT="$WORKER_ROOT"
 
+# Set default project if not specified
+export CLAUDE_MEM_PROJECT="${CLAUDE_MEM_PROJECT:-clawdbot}"
+
 # Delegate to Worker's ensure script
 exec "${WORKER_ROOT}/scripts/ensure-worker.sh"
